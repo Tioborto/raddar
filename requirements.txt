@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+detect-secrets
+SQLAlchemy
+async-exit-stack 
+async-generator
+gitpython
