@@ -1,6 +1,5 @@
 import binascii
 import hmac
-import hashlib
 import urllib.parse
 import json
 
@@ -21,7 +20,7 @@ async def valid_github_webhook(
     signature = hmac.new(
         settings.api_key.get_secret_value().encode(),
         msg=body,
-        digestmod=hashlib.sha256,
+        digestmod="sha256",
     )
     digest = f"sha256={signature.hexdigest()}"
     if not hmac.compare_digest(digest, github_signature):
