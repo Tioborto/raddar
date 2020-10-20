@@ -3,15 +3,16 @@ from typing import Any, List
 from fastapi import APIRouter, Body, Depends, Header, Request
 from sqlalchemy.orm import Session
 
-from raddar.core import contexts, settings, dependencies
+from raddar.core import contexts, dependencies
 from raddar.crud import crud
 from raddar.schemas import schemas
+from raddar.core.settings import settings
 from raddar.api import deps
 from raddar.lib.managers.detect_secrets_manager import get_project_secrets
+from raddar.lib.managers.repository_manager import get_branch_name
 
 
 router = APIRouter()
-settings = settings.Settings()
 
 
 @router.post("/github", dependencies=[Depends(dependencies.valid_github_webhook)])
@@ -24,8 +25,9 @@ def scan_github_project(payload: dict, db: Session = Depends(deps.get_db)):
         analyze_returned = crud.create_analyze(
             db=db,
             project=schemas.ProjectBase(name=payload["repository"]["full_name"]),
-            branch="master",
+            analyze=schemas.AnalyzeBase(branch_name=get_branch_name(payload["ref"])),
             ref_name=repo.commit("HEAD").hexsha,
+            origin="github-webhook"
         )
 
         baseline = get_project_secrets(temp_dir, payload["repository"]["full_name"])
@@ -37,5 +39,5 @@ def scan_github_project(payload: dict, db: Session = Depends(deps.get_db)):
                 new_secret["line_number"] = secret["line_number"]
                 new_secret["secret_hashed"] = secret["hashed_secret"]
                 crud.create_analyze_secret(db, new_secret, analyze_returned.id)
-
-        return "ok"
+        
+        return analyze_returned

@@ -9,7 +9,6 @@ from ..lib.managers.repository_manager import clone_repository
 
 
 @contextmanager
-# def clone_repo(project_name) -> ContextManager[Repo]:
 def clone_repo(project_dir: str, project_name: str, ref_name: str):
     with tempfile.TemporaryDirectory(dir=project_dir) as tpf:
         try:

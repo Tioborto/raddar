@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from raddar.models import models
 from raddar.schemas import schemas
+from raddar.lib.managers.repository_manager import get_branch_name
 
 
 def create_analyze_secret(db: Session, secret: schemas.SecretCreate, analyze_id: int):
@@ -28,6 +29,7 @@ def create_analyze(
     project: schemas.ProjectCreate,
     analyze: schemas.AnalyzeCreate,
     ref_name: str,
+    origin: str
 ):
     db_project = get_project_by_name(db, project_name=project.name)
 
@@ -36,8 +38,9 @@ def create_analyze(
 
     db_analyze = models.Analyze(
         execution_date=datetime.now(),
-        branch_name=analyze.branch_name,
+        branch_name=get_branch_name(analyze.branch_name),
         ref_name=ref_name,
+        origin=origin,
         project_id=db_project.id,
     )
     db.add(db_analyze)
