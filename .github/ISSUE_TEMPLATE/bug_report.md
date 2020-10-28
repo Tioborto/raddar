@@ -3,7 +3,7 @@ name: "\U0001F41B Bug report"
 about: Create a report to help us improve
 
 ---
-<!-- Issues are for bugs and feature requests** only -->
+<!-- Issues are for **bugs and feature requests** only -->
 
 ##### ISSUE TYPE
 
@@ -26,5 +26,4 @@ about: Create a report to help us improve
 
 ##### ADDITIONAL INFORMATION
 
-<!-- Include any links to sosreport, database dumps, screenshots or other
-information. -->
+<!-- Include any links or other information to facilitate the investigation. -->
