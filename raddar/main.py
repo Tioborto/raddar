@@ -1,14 +1,13 @@
 from fastapi import FastAPI
 
-from .api.api_v1.api import api_router
-from .db.database import engine
-from .models import models
-from .core import settings
+from raddar.api.api_v1.api import api_router
+from raddar.db.database import engine
+from raddar.models import models
+from raddar.core.settings import settings
 
 
 models.Base.metadata.create_all(bind=engine)
 
-settings = settings.Settings()
 app = FastAPI()
 # app = FastAPI(
 #     title=settings.PROJECT_NAME, openapi_url=f"{settings.API_V1_STR}/openapi.json"

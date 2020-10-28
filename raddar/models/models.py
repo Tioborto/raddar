@@ -1,5 +1,6 @@
 import datetime
 
+from pydantic import BaseModel
 from sqlalchemy import (
     Boolean,
     Column,
@@ -42,7 +43,19 @@ class Analyze(Base):
     execution_date = Column(DateTime, index=True)
     branch_name = Column(String)
     ref_name = Column(String)
+    origin = Column(String)
 
     project_id = Column(Integer, ForeignKey("projects.id"))
 
     secrets = relationship("Secret")
+
+
+class GithubRepositoryPayload(BaseModel):
+    id: int
+    name: str
+    full_name: str
+
+
+class GitHubPushPayload(BaseModel):
+    ref: str
+    repository: GithubRepositoryPayload

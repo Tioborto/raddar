@@ -1,16 +1,18 @@
 from contextlib import contextmanager
 import tempfile
-from typing import ContextManager
+from typing import Iterator, Tuple
 
 from fastapi import HTTPException
+from git import Repo
 
 from ..lib.exception import FailedToCloneRepoException
 from ..lib.managers.repository_manager import clone_repository
 
 
 @contextmanager
-# def clone_repo(project_name) -> ContextManager[Repo]:
-def clone_repo(project_dir: str, project_name: str, ref_name: str):
+def clone_repo(
+    project_dir: str, project_name: str, ref_name: str
+) -> Iterator[Tuple[Repo, str]]:
     with tempfile.TemporaryDirectory(dir=project_dir) as tpf:
         try:
             cloned_repo = clone_repository(tpf, project_name, ref_name)

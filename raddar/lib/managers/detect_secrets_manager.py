@@ -23,6 +23,11 @@ def get_project_secrets(project_results_dir: str, project_name: str) -> dict:
         should_verify_secrets=not args.no_verify,
     )
 
-    baseline_dict = _perform_scan(args, plugins, automaton, word_list_hash,)
+    baseline_dict = _perform_scan(
+        args,
+        plugins,
+        automaton,
+        word_list_hash,
+    )
 
     return baseline_dict
