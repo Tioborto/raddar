@@ -2,6 +2,7 @@ from datetime import datetime
 
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
+from typing import Literal
 
 from raddar.models import models
 from raddar.schemas import schemas
@@ -29,7 +30,7 @@ def create_analyze(
     project: schemas.ProjectCreate,
     analyze: schemas.AnalyzeCreate,
     ref_name: str,
-    origin: str
+    origin: Literal["manual", "github-webhook"],
 ):
     db_project = get_project_by_name(db, project_name=project.name)
 
