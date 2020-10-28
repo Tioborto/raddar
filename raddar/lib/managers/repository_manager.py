@@ -22,7 +22,6 @@ def clone_repository(project_results_dir: str, repo_name: str, ref_name: str) ->
         repo.git.checkout(get_branch_name(ref_name))
         return repo
     except GitCommandError as git_command_error:
-        print(git_command_error)
         raise FailedToCloneRepoException(
             "Failed to clone repository"
         ) from git_command_error
