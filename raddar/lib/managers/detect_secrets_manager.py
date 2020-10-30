@@ -3,14 +3,16 @@ from detect_secrets.plugins.common import initialize
 from detect_secrets.util import build_automaton
 from sqlalchemy.orm import Session
 
-from raddar.core import contexts, dependencies, settings
+from raddar.core import contexts
 from raddar.crud import crud
 from raddar.schemas import schemas
 from raddar.core.settings import settings
 from raddar.lib.managers.repository_manager import get_branch_name
 
 
-def analyze_project(project_name: str, analyze: schemas.Analyze, scan_origin: str, db: Session):
+def analyze_project(
+    project_name: str, analyze: schemas.Analyze, scan_origin: str, db: Session
+):
     with contexts.clone_repo(
         project_dir=settings.PROJECT_RESULTS_DIRNAME,
         project_name=project_name,
@@ -32,8 +34,8 @@ def analyze_project(project_name: str, analyze: schemas.Analyze, scan_origin: st
                 new_secret["secret_type"] = secret["type"]
                 new_secret["line_number"] = secret["line_number"]
                 new_secret["secret_hashed"] = secret["hashed_secret"]
-                crud.create_analyze_secret(db, new_secret, analyze_returned.id) 
-        
+                crud.create_analyze_secret(db, new_secret, analyze_returned.id)
+
         return analyze_returned
 
 
