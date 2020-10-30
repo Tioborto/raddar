@@ -30,7 +30,7 @@ def create_analyze(
     project: schemas.ProjectCreate,
     analyze: schemas.AnalyzeCreate,
     ref_name: str,
-    origin: Literal["manual", "github-webhook"],
+    scan_origin: Literal["manual", "github-webhook"],
 ):
     db_project = get_project_by_name(db, project_name=project.name)
 
@@ -41,7 +41,7 @@ def create_analyze(
         execution_date=datetime.now(),
         branch_name=get_branch_name(analyze.branch_name),
         ref_name=ref_name,
-        origin=origin,
+        scan_origin=scan_origin,
         project_id=db_project.id,
     )
     db.add(db_analyze)
