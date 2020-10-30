@@ -43,7 +43,7 @@ class Analyze(Base):
     execution_date = Column(DateTime, index=True)
     branch_name = Column(String)
     ref_name = Column(String)
-    origin = Column(String)
+    scan_origin = Column(String)
 
     project_id = Column(Integer, ForeignKey("projects.id"))
 

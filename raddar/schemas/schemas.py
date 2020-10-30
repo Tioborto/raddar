@@ -34,7 +34,7 @@ class Analyze(AnalyzeBase):
     id: int
     execution_date: datetime
     ref_name: str
-    origin: str
+    scan_origin: str
     project_id: int
     secrets: List[Secret] = []
 
