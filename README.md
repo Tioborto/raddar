@@ -21,7 +21,7 @@
 
 ## Requirements
 
-* Python 3.8+. You can use [pyenv][pyenv-installation] to install multiple versions of Python in parallel.
+- Python 3.8+. You can use [pyenv][pyenv-installation] to install multiple versions of Python in parallel.
 
 ## Development
 
@@ -38,9 +38,9 @@ To start the API, follow these instructions:
 
 A mini web server is launched in your terminal session and the API is accessible at the following URLs:
 
-* Docs : <http://localhost:8000/docs>
-* Redoc: <http://localhost:8000/redoc>
-* API: <http://localhost:8000/api/v1>
+- Docs : <http://localhost:8000/docs>
+- Redoc: <http://localhost:8000/redoc>
+- API: <http://localhost:8000/api/v1>
 
 ### Code formatting
 
@@ -50,9 +50,9 @@ Code formatting is automated using [Black][black]. Simply run `black .` to forma
 
 Before every commit, [pre-commit][pre-commit] hooks are run to:
 
-* check code formatting
-* detect secrets
-* create TOC in README
+- check code formatting
+- detect secrets
+- create TOC in README
 
 If your commit is prevented by black, that means that code was reformatted. Just try your commit again and it should pass.
 
@@ -64,12 +64,12 @@ Please open a Pull Request per User Story, with a commit per subtask, or a Pull 
 
 Please try to follow [Conventional Commits][conventional-commits] for your commits, e.g:
 
-* `feat: list GitHub users` OK
-* `fix: use new Vault authentication in GitLab CI` OK
-* `fix : stuff` **NOT** OK (space before colon + vague message)
-* `change: list GitHub users` **NOT** OK (`change` keyword not in allowed list)
-* `feat: List GitHub users` **NOT** OK (message should not start with a capital letter, e.g not `List`)
-* more examples are available in the [Conventional Commits documentation][conventional-commits]
+- `feat: list GitHub users` OK
+- `fix: use new Vault authentication in GitLab CI` OK
+- `fix : stuff` **NOT** OK (space before colon + vague message)
+- `change: list GitHub users` **NOT** OK (`change` keyword not in allowed list)
+- `feat: List GitHub users` **NOT** OK (message should not start with a capital letter, e.g not `List`)
+- more examples are available in the [Conventional Commits documentation][conventional-commits]
 
 Allowed keywords for commits are `build, ci, chore, docs, feat, fix, perf, refactor, revert, style, test`.
 
