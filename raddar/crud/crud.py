@@ -50,6 +50,10 @@ def create_analyze(
     return db_analyze
 
 
+def get_projects(db: Session):
+    return db.query(models.Project).all()
+
+
 def get_project_by_name(db: Session, project_name: str):
     return db.query(models.Project).filter(models.Project.name == project_name).first()
 
@@ -66,3 +70,7 @@ def get_analyze_by_name_and_ref(
         .order_by(models.Analyze.execution_date.desc())
         .first()
     )
+
+
+def get_analyzes(db: Session):
+    return db.query(models.Analyze).all()

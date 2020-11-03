@@ -18,9 +18,7 @@ async def valid_github_webhook(
     body = await request.body()
 
     signature = hmac.new(
-        settings.api_key.get_secret_value().encode(),
-        msg=body,
-        digestmod="sha256",
+        settings.api_key.get_secret_value().encode(), msg=body, digestmod="sha256",
     )
     digest = f"sha256={signature.hexdigest()}"
     if not hmac.compare_digest(digest, github_signature):
