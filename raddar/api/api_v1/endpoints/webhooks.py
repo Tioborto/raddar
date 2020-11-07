@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from raddar.core import dependencies, security
 from raddar.models import models
 from raddar.schemas import schemas
-from raddar.lib.managers.detect_secrets_manager import analyze_project
+from raddar.lib.managers.detect_secrets_manager import project_analysis
 from raddar.lib.managers.repository_manager import get_branch_name
 
 
@@ -18,9 +18,9 @@ def scan_github_project(
     db: Session = Depends(dependencies.get_db),
 ):
     background_task.add_task(
-        analyze_project,
+        project_analysis,
         project_name=payload.repository.full_name,
-        analyze=schemas.AnalyzeBase(branch_name=get_branch_name(payload.ref)),
+        analysis=schemas.AnalysisBase(branch_name=get_branch_name(payload.ref)),
         scan_origin="github-webhook",
         db=db,
     )

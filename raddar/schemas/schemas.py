@@ -22,15 +22,15 @@ class Secret(SecretBase):
         orm_mode = True
 
 
-class AnalyzeBase(BaseModel):
+class AnalysisBase(BaseModel):
     branch_name: str
 
 
-class AnalyzeCreate(AnalyzeBase):
+class AnalysisCreate(AnalysisBase):
     pass
 
 
-class Analyze(AnalyzeBase):
+class Analysis(AnalysisBase):
     id: int
     execution_date: datetime
     ref_name: str
@@ -52,7 +52,7 @@ class ProjectCreate(ProjectBase):
 
 class Project(ProjectBase):
     id: int
-    analyzes: List[Analyze] = []
+    analyses: List[Analysis] = []
 
     class Config:
         orm_mode = True
