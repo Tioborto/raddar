@@ -21,7 +21,7 @@ class Project(Base):
     id = Column(Integer, primary_key=True, unique=True, index=True)
     name = Column(String, index=True)
 
-    analyzes = relationship("Analyze")
+    analyses = relationship("Analysis")
 
 
 class Secret(Base):
@@ -33,11 +33,11 @@ class Secret(Base):
     line_number = Column(Integer, index=True)
     secret_hashed = Column(String, index=True)
 
-    analyze_id = Column(Integer, ForeignKey("analyzes.id"))
+    analysis_id = Column(Integer, ForeignKey("analyses.id"))
 
 
-class Analyze(Base):
-    __tablename__ = "analyzes"
+class Analysis(Base):
+    __tablename__ = "analyses"
 
     id = Column(Integer, primary_key=True, index=True)
     execution_date = Column(DateTime, index=True)

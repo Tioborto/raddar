@@ -10,18 +10,18 @@ from raddar.core.settings import settings
 from raddar.lib.managers.repository_manager import get_branch_name
 
 
-def analyze_project(
-    project_name: str, analyze: schemas.Analyze, scan_origin: str, db: Session
+def project_analysis(
+    project_name: str, analysis: schemas.Analysis, scan_origin: str, db: Session
 ):
     with contexts.clone_repo(
         project_dir=settings.PROJECT_RESULTS_DIRNAME,
         project_name=project_name,
-        ref_name=get_branch_name(analyze.branch_name),
+        ref_name=get_branch_name(analysis.branch_name),
     ) as (repo, temp_dir):
-        analyze_returned = crud.create_analyze(
+        analysis_returned = crud.create_analysis(
             db=db,
             project=schemas.ProjectBase(name=project_name),
-            analyze=analyze,
+            analysis=analysis,
             ref_name=repo.commit("HEAD").hexsha,
             scan_origin=scan_origin,
         )
@@ -34,9 +34,9 @@ def analyze_project(
                 new_secret["secret_type"] = secret["type"]
                 new_secret["line_number"] = secret["line_number"]
                 new_secret["secret_hashed"] = secret["hashed_secret"]
-                crud.create_analyze_secret(db, new_secret, analyze_returned.id)
+                crud.create_analysis_secret(db, new_secret, analysis_returned.id)
 
-        return analyze_returned
+        return analysis_returned
 
 
 def get_project_secrets(project_results_dir: str, project_name: str) -> dict:
@@ -59,11 +59,6 @@ def get_project_secrets(project_results_dir: str, project_name: str) -> dict:
         should_verify_secrets=not args.no_verify,
     )
 
-    baseline_dict = _perform_scan(
-        args,
-        plugins,
-        automaton,
-        word_list_hash,
-    )
+    baseline_dict = _perform_scan(args, plugins, automaton, word_list_hash,)
 
     return baseline_dict
