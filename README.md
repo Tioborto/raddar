@@ -83,7 +83,7 @@ Please type hint your code, or add types to the code you change.
 
 Pydantic-Vault is available under the [MIT license](./LICENSE).
 
-[black]: https://github.com/python/black
+[black]: https://github.com/psf/black
 [commitizen]: https://woile.github.io/commitizen/
 [conventional-commits]: https://www.conventionalcommits.org/en/v1.0.0/#summary
 [detect-secrets]: https://github.com/Yelp/detect-secrets
