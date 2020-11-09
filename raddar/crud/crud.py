@@ -28,7 +28,7 @@ def create_project(db: Session, project: schemas.ProjectCreate):
 def create_analysis(
     db: Session,
     project: schemas.ProjectCreate,
-    analysis: schemas.AnalysisCreate,
+    branch_name: str,
     ref_name: str,
     scan_origin: Literal["manual", "github-webhook"],
 ):
@@ -39,7 +39,7 @@ def create_analysis(
 
     db_analysis = models.Analysis(
         execution_date=datetime.now(),
-        branch_name=get_branch_name(analysis.branch_name),
+        branch_name=branch_name,
         ref_name=ref_name,
         scan_origin=scan_origin,
         project_id=db_project.id,

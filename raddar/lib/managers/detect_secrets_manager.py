@@ -13,15 +13,19 @@ from raddar.lib.managers.repository_manager import get_branch_name
 def project_analysis(
     project_name: str, analysis: schemas.Analysis, scan_origin: str, db: Session
 ):
+    branch_name = analysis.branch_name
+    if branch_name:
+        branch_name = get_branch_name(branch_name)
+
     with contexts.clone_repo(
         project_dir=settings.PROJECT_RESULTS_DIRNAME,
         project_name=project_name,
-        ref_name=get_branch_name(analysis.branch_name),
+        ref_name=branch_name,
     ) as (repo, temp_dir):
         analysis_returned = crud.create_analysis(
             db=db,
             project=schemas.ProjectBase(name=project_name),
-            analysis=analysis,
+            branch_name=repo.active_branch.name,
             ref_name=repo.commit("HEAD").hexsha,
             scan_origin=scan_origin,
         )
