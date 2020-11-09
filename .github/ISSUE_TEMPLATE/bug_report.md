@@ -1,7 +1,7 @@
 ---
 name: "\U0001F41B Bug report"
 about: Create a report to help us improve
-
+labels: 'Bug'
 ---
 <!-- Issues are for **bugs and feature requests** only -->
 
