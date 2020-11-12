@@ -11,7 +11,10 @@
 
 - [Requirements](#requirements)
 - [Development](#development)
-  * [Installation](#installation)
+  * [Prerequisites](#prerequisites)
+  * [Local](#local)
+  * [Docker image](#docker-image)
+  * [Access](#access)
   * [Code formatting](#code-formatting)
   * [Precommit hooks](#precommit-hooks)
 - [Contributing](#contributing)
@@ -25,7 +28,14 @@
 
 ## Development
 
-### Installation
+### Prerequisites
+
+An env file is required to use analyses via GitHub webhook.
+
+1. `cp .env_template .env`
+2. Set variables in *.env* file  
+
+### Local
 
 To start the API, follow these instructions:
 
@@ -36,7 +46,19 @@ To start the API, follow these instructions:
   5. Run `uvicorn raddar.main:app` (`--reload` for development)
   6. Install [git hooks][pre-commit]: `pre-commit install --install-hooks`
 
-A mini web server is launched in your terminal session and the API is accessible at the following URLs:
+### Docker image
+
+A *Dockerfile* and a *docker-compose* file are present in this repository.  
+To launch the app using docker, just follow these instructions :  
+
+- `docker-compose build`
+- `docker-compose up -d`
+
+The API will be accessible at the same URLs as above.
+
+### Access
+
+In local mode or using the docker image, a mini web server is launched in your terminal session and the API is accessible at the following URLs:
 
 - Docs : <http://localhost:8000/docs>
 - Redoc: <http://localhost:8000/redoc>
