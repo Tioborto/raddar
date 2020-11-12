@@ -81,7 +81,7 @@ Please type hint your code, or add types to the code you change.
 
 ## License
 
-Pydantic-Vault is available under the [MIT license](./LICENSE).
+Raddar is available under the [MIT license](./LICENSE).
 
 [black]: https://github.com/psf/black
 [commitizen]: https://woile.github.io/commitizen/
