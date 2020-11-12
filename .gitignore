@@ -2,6 +2,7 @@ __pycache__
 .mypy_cache
 .vscode
 .venv
+.DS_Store
 sql_app.db
 raddar/results/*
 .env
