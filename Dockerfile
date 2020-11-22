@@ -11,10 +11,11 @@ RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-
     poetry config virtualenvs.create false
 
 # Copy poetry.lock* in case it doesn't exist in the repo
-COPY ./pyproject.toml ./poetry.lock* /raddar/
+COPY ./pyproject.toml ./poetry.lock* alembic.ini /raddar/
 
 RUN poetry install --no-root --no-dev && \
     mkdir /raddar/results
 
+COPY ./alembic /raddar/alembic
 COPY ./raddar /raddar/raddar/
 ENV PYTHONPATH=/raddar

@@ -1,5 +1,5 @@
-from contextlib import contextmanager
 import tempfile
+from contextlib import contextmanager
 from typing import Iterator, Tuple
 
 from fastapi import HTTPException
@@ -17,5 +17,6 @@ def clone_repo(
         try:
             cloned_repo = clone_repository(tpf, project_name, ref_name)
             yield (cloned_repo, tpf)
-        except FailedToCloneRepoException:
+        except FailedToCloneRepoException as e:
+            print(e)
             raise HTTPException(status_code=500, detail="Failed to clone repository")
