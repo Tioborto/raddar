@@ -1,3 +1,5 @@
+import asyncio
+
 from detect_secrets.main import _perform_scan, parse_args
 from detect_secrets.plugins.common import initialize
 from detect_secrets.util import build_automaton
@@ -8,15 +10,19 @@ from raddar.core import contexts
 from raddar.core.celery_app import celery_app
 from raddar.core.settings import settings
 from raddar.crud import crud
+from raddar.db.database import database
 from raddar.lib.managers.repository_manager import get_branch_name
 from raddar.schemas import schemas
 
 
 @celery_app.task
-async def project_analysis_async(project_name: str, analysis: dict, scan_origin: str):
-    print("je suis dans project_analysis_async")
-    return await project_analysis(
-        project_name, schemas.AnalysisBase.parse_obj(analysis), scan_origin
+def background_project_analysis(project_name: str, analysis: dict, scan_origin: str):
+    print("je suis dans background")
+    return asyncio.run(
+        project_analysis(
+            project_name, schemas.AnalysisBase.parse_obj(analysis), scan_origin
+        ),
+        debug=True,
     )
 
 
