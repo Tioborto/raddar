@@ -1,10 +1,11 @@
+import asyncio
+
 from fastapi import FastAPI
 
 from raddar.api.api_v1.api import api_router
+from raddar.core.settings import settings
 from raddar.db.database import engine
 from raddar.models import models
-from raddar.core.settings import settings
-
 
 models.Base.metadata.create_all(bind=engine)
 

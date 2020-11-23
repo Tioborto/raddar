@@ -1,17 +1,34 @@
-from detect_secrets.main import parse_args, _perform_scan
+import asyncio
+
+from detect_secrets.main import _perform_scan, parse_args
 from detect_secrets.plugins.common import initialize
 from detect_secrets.util import build_automaton
 from sqlalchemy.orm import Session
 
 from raddar.core import contexts
-from raddar.crud import crud
-from raddar.schemas import schemas
+from raddar.core.celery_app import celery_app
 from raddar.core.settings import settings
+from raddar.crud import crud
+from raddar.db.database import database
 from raddar.lib.managers.repository_manager import get_branch_name
+from raddar.schemas import schemas
 
 
-def project_analysis(
-    project_name: str, analysis: schemas.Analysis, scan_origin: str, db: Session
+@celery_app.task
+def background_project_analysis(project_name: str, analysis: dict, scan_origin: str):
+    print("je suis dans background")
+    return asyncio.run(
+        project_analysis(
+            project_name, schemas.AnalysisBase.parse_obj(analysis), scan_origin
+        ),
+        debug=True,
+    )
+
+
+async def project_analysis(
+    project_name: str,
+    analysis: schemas.AnalysisBase,
+    scan_origin: str,
 ):
     branch_name = analysis.branch_name
     if branch_name:
@@ -63,6 +80,11 @@ def get_project_secrets(project_results_dir: str, project_name: str) -> dict:
         should_verify_secrets=not args.no_verify,
     )
 
-    baseline_dict = _perform_scan(args, plugins, automaton, word_list_hash,)
+    baseline_dict = _perform_scan(
+        args,
+        plugins,
+        automaton,
+        word_list_hash,
+    )
 
     return baseline_dict
