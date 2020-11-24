@@ -1,11 +1,14 @@
 from datetime import datetime
 from typing import List, Literal
 
+import databases
 from fastapi import Depends
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
+from raddar.core.settings import settings
 from raddar.db.database import analysis, database, project, secret
+from raddar.lib.custom_typing import Scan_origin
 from raddar.lib.managers.repository_manager import get_branch_name
 from raddar.schemas import schemas
 
@@ -17,14 +20,15 @@ async def create_analysis_secret(secretToCreate: schemas.SecretBase, analysis_id
 
 async def create_project(projectToCreate: schemas.ProjectBase):
     query = project.insert(None).values(**projectToCreate.dict())
+    print("je suis dans create project")
     return await database.execute(query=query)
 
 
 async def create_analysis(
     project_id: int,
-    analysisToCreate: schemas.AnalysisCreate,
+    analysisToCreate: schemas.AnalysisBase,
     ref_name: str,
-    scan_origin: Literal["manual", "github-webhook"],
+    scan_origin: Scan_origin,
     secrets_to_create: List[schemas.SecretBase],
 ):
     now = datetime.now()
