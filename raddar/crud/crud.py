@@ -1,12 +1,16 @@
 from datetime import datetime
-
-from sqlalchemy import or_
-from sqlalchemy.orm import Session
 from typing import Literal
 
-from raddar.models import models
-from raddar.schemas import schemas
+from fastapi import Depends
+from sqlalchemy import or_
+from sqlalchemy.orm import Session
+
+import databases
+from raddar.core.settings import settings
+from raddar.db.database import analysis, database, project, secret
+from raddar.lib.custom_typing import Scan_origin
 from raddar.lib.managers.repository_manager import get_branch_name
+from raddar.schemas import schemas
 
 
 def create_analysis_secret(db: Session, secret: schemas.SecretCreate, analysis_id: int):
@@ -17,20 +21,18 @@ def create_analysis_secret(db: Session, secret: schemas.SecretCreate, analysis_i
     return db_secret
 
 
-def create_project(db: Session, project: schemas.ProjectCreate):
-    db_project = models.Project(name=project.name)
-    db.add(db_project)
-    db.commit()
-    db.refresh(db_project)
-    return db_project
+async def create_project(projectToCreate: schemas.ProjectBase):
+    query = project.insert(None).values(**projectToCreate.dict())
+    print("je suis dans create project")
+    return await database.execute(query=query)
 
 
-def create_analysis(
-    db: Session,
-    project: schemas.ProjectCreate,
-    branch_name: str,
+async def create_analysis(
+    project_id: int,
+    analysisToCreate: schemas.AnalysisBase,
     ref_name: str,
-    scan_origin: Literal["manual", "github-webhook"],
+    scan_origin: Scan_origin,
+    secrets_to_create: List[schemas.SecretBase],
 ):
     db_project = get_project_by_name(db, project_name=project.name)
 

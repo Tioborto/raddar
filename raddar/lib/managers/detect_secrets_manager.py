@@ -10,42 +10,43 @@ from raddar.core.celery_app import celery_app
 from raddar.core.settings import settings
 from raddar.crud import crud
 from raddar.db.database import database
+from raddar.lib.custom_typing import Scan_origin
 from raddar.lib.managers.repository_manager import get_branch_name
 from raddar.schemas import schemas
 
 
 @celery_app.task
-def background_project_analysis(project_name: str, analysis: dict, scan_origin: str):
-    print("je suis dans background")
-    return asyncio.run(
+def background_project_analysis(
+    project_name: str, analysis: dict, scan_origin: Scan_origin
+):
+    loop = asyncio.get_event_loop()
+    return loop.run_until_complete(
         project_analysis(
             project_name, schemas.AnalysisBase.parse_obj(analysis), scan_origin
-        ),
-        debug=True,
+        )
     )
 
 
 async def project_analysis(
     project_name: str,
     analysis: schemas.AnalysisBase,
-    scan_origin: str,
+    scan_origin: Scan_origin,
 ):
-    branch_name = analysis.branch_name
-    if branch_name:
-        branch_name = get_branch_name(branch_name)
-
     with contexts.clone_repo(
         project_dir=settings.PROJECT_RESULTS_DIRNAME,
         project_name=project_name,
         ref_name=branch_name,
     ) as (repo, temp_dir):
-        analysis_returned = crud.create_analysis(
-            db=db,
-            project=schemas.ProjectBase(name=project_name),
-            branch_name=repo.active_branch.name,
-            ref_name=repo.commit("HEAD").hexsha,
-            scan_origin=scan_origin,
+        project_to_be_analyzed = await crud.get_project_by_name(
+            project_name=project_name
         )
+
+        if not project_to_be_analyzed:
+            project_to_be_analyzed_id = await crud.create_project(
+                schemas.ProjectBase(name=project_name)
+            )
+        else:
+            project_to_be_analyzed_id = project_to_be_analyzed["id"]
 
         baseline = get_project_secrets(temp_dir, project_name)
         for file in baseline["results"]:

@@ -14,8 +14,7 @@ router = APIRouter()
 @router.post("/github", dependencies=[Depends(security.valid_github_webhook)])
 def scan_github_project(payload: models.GitHubPushPayload):
     analysis = schemas.AnalysisBase(branch_name=get_branch_name(payload.ref))
-    print("je suis avant project_analysis_async")
     background_id = background_project_analysis.delay(
         payload.repository.full_name, analysis.dict(), "github-webhook"
     )
-    return {"message": "Notification sent in the background"}
+    return {"message": f"Notification sent in the background : {background_id}"}
