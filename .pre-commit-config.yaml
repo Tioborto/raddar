@@ -28,3 +28,10 @@ repos:
     hooks:
     -   id: mypy
         language_version: "python3.8"
+-   repo: local
+    hooks:
+    - id: pylint
+      name: pylint
+      entry: python -m pylint.__main__
+      language: system
+      types: [python]
