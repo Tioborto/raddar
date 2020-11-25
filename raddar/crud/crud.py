@@ -1,40 +1,37 @@
 from datetime import datetime
-from typing import List, Literal
+from typing import List
 
-import databases
-from fastapi import Depends
-from sqlalchemy import or_
-from sqlalchemy.orm import Session
-
-from raddar.core.settings import settings
 from raddar.db.database import analysis, database, project, secret
-from raddar.lib.custom_typing import Scan_origin
+from raddar.lib.custom_typing import ScanOrigin
 from raddar.lib.managers.repository_manager import get_branch_name
 from raddar.schemas import schemas
 
 
-async def create_analysis_secret(secretToCreate: schemas.SecretBase, analysis_id: int):
-    query = secret.insert(None).values(**secretToCreate.dict(), analysis_id=analysis_id)
+async def create_analysis_secret(
+    secret_to_create: schemas.SecretBase, analysis_id: int
+):
+    query = secret.insert(None).values(
+        **secret_to_create.dict(), analysis_id=analysis_id
+    )
     return await database.execute(query=query)
 
 
-async def create_project(projectToCreate: schemas.ProjectBase):
-    query = project.insert(None).values(**projectToCreate.dict())
-    print("je suis dans create project")
+async def create_project(project_to_create: schemas.ProjectBase):
+    query = project.insert(None).values(**project_to_create.dict())
     return await database.execute(query=query)
 
 
 async def create_analysis(
     project_id: int,
-    analysisToCreate: schemas.AnalysisBase,
+    analysis_to_create: schemas.AnalysisBase,
     ref_name: str,
-    scan_origin: Scan_origin,
+    scan_origin: ScanOrigin,
     secrets_to_create: List[schemas.SecretBase],
 ):
     now = datetime.now()
     query = analysis.insert(None).values(
         execution_date=now,
-        branch_name=get_branch_name(analysisToCreate.branch_name),
+        branch_name=get_branch_name(analysis_to_create.branch_name),
         ref_name=ref_name,
         scan_origin=scan_origin,
         project_id=project_id,
@@ -42,12 +39,14 @@ async def create_analysis(
     analysis_returned_id = await database.execute(query=query)
 
     secrets_returned = []
-    for secret in secrets_to_create:
-        secret_returned_id = await create_analysis_secret(secret, analysis_returned_id)
-        secrets_returned.append({**secret.dict(), "id": secret_returned_id})
+    for secret_to_create in secrets_to_create:
+        secret_returned_id = await create_analysis_secret(
+            secret_to_create, analysis_returned_id
+        )
+        secrets_returned.append({**secret_to_create.dict(), "id": secret_returned_id})
 
     return {
-        **analysisToCreate.dict(),
+        **analysis_to_create.dict(),
         "id": analysis_returned_id,
         "execution_date": now,
         "ref_name": ref_name,

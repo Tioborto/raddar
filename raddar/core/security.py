@@ -1,9 +1,6 @@
-import binascii
 import hmac
-import json
-import urllib.parse
 
-from fastapi import Depends, HTTPException, Request, Security
+from fastapi import HTTPException, Request, Security
 from fastapi.security import APIKeyHeader
 
 from raddar.core.settings import settings

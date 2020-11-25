@@ -1,8 +1,6 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
 
 from raddar.core import security
-from raddar.core.celery_app import celery_app
 from raddar.lib.managers.detect_secrets_manager import background_project_analysis
 from raddar.lib.managers.repository_manager import get_branch_name
 from raddar.models import models

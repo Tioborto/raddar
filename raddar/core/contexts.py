@@ -17,6 +17,7 @@ def clone_repo(
         try:
             cloned_repo = clone_repository(tpf, project_name, ref_name)
             yield (cloned_repo, tpf)
-        except FailedToCloneRepoException as e:
-            print(e)
-            raise HTTPException(status_code=500, detail="Failed to clone repository")
+        except FailedToCloneRepoException as error:
+            raise HTTPException(
+                status_code=500, detail="Failed to clone repository"
+            ) from error

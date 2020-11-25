@@ -1,6 +1,5 @@
 from fastapi import APIRouter
 
-from raddar.db.database import database
 from raddar.lib.managers.detect_secrets_manager import project_analysis
 from raddar.schemas import schemas
 

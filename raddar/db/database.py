@@ -1,18 +1,6 @@
-from contextlib import asynccontextmanager, contextmanager
-from typing import Iterator
-
-import databases
 import sqlalchemy
-from sqlalchemy import (
-    Column,
-    DateTime,
-    ForeignKey,
-    Integer,
-    MetaData,
-    String,
-    Table,
-    create_engine,
-)
+from databases import Database
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Table
 
 from raddar.core.settings import settings
 
@@ -47,7 +35,7 @@ secret = Table(
     Column("analysis_id", Integer, ForeignKey("analysis.id"), nullable=False),
 )
 
-database = databases.Database(settings.SQLALCHEMY_DATABASE_URI)
+database = Database(settings.SQLALCHEMY_DATABASE_URI)
 
 engine = sqlalchemy.create_engine(settings.SQLALCHEMY_DATABASE_URI)
 metadata.create_all(engine)

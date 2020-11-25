@@ -1,3 +1,3 @@
 from typing import Literal
 
-Scan_origin = Literal["manual", "github-webhook"]
+ScanOrigin = Literal["manual", "github-webhook"]
