@@ -20,3 +20,6 @@ ignored-classes=responses # Responses defines all its global methods dynamically
 
 [SIMILARITIES]
 ignore-imports=yes # having the same imports in multiple files is NOT duplicate code
+
+[VARIABLES]
+ignored-argument-names=arg|args|kwargs
