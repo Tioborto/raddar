@@ -3,15 +3,13 @@ from typing import Optional
 
 from git import GitCommandError, NoSuchPathError, Repo
 
-from ..exception import (
-    FailedToCloneRepoException,
-    FailedToWriteRepoException,
-)
+from ..exception import FailedToCloneRepoException, FailedToWriteRepoException
 
 
 def get_branch_name(ref_name: str) -> str:
     if ref_name.startswith("refs/"):
-        ref_name = re.sub("^refs\/\\w+\/", "", ref_name, count=1)
+        ref_name = re.sub(r"^refs/\w+/", "", ref_name, count=1)
+        print(ref_name)
     return ref_name
 
 

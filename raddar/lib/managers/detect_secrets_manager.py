@@ -3,21 +3,19 @@ import asyncio
 from detect_secrets.main import _perform_scan, parse_args
 from detect_secrets.plugins.common import initialize
 from detect_secrets.util import build_automaton
-from sqlalchemy.orm import Session
 
 from raddar.core import contexts
 from raddar.core.celery_app import celery_app
 from raddar.core.settings import settings
 from raddar.crud import crud
-from raddar.db.database import database
-from raddar.lib.custom_typing import Scan_origin
+from raddar.lib.custom_typing import ScanOrigin
 from raddar.lib.managers.repository_manager import get_branch_name
 from raddar.schemas import schemas
 
 
 @celery_app.task
 def background_project_analysis(
-    project_name: str, analysis: dict, scan_origin: Scan_origin
+    project_name: str, analysis: dict, scan_origin: ScanOrigin
 ):
     loop = asyncio.get_event_loop()
     return loop.run_until_complete(
@@ -30,12 +28,12 @@ def background_project_analysis(
 async def project_analysis(
     project_name: str,
     analysis: schemas.AnalysisBase,
-    scan_origin: Scan_origin,
+    scan_origin: ScanOrigin,
 ):
     with contexts.clone_repo(
         project_dir=settings.PROJECT_RESULTS_DIRNAME,
         project_name=project_name,
-        ref_name=branch_name,
+        ref_name=get_branch_name(analysis.branch_name),
     ) as (repo, temp_dir):
         project_to_be_analyzed = await crud.get_project_by_name(
             project_name=project_name
@@ -49,14 +47,25 @@ async def project_analysis(
             project_to_be_analyzed_id = project_to_be_analyzed["id"]
 
         baseline = get_project_secrets(temp_dir, project_name)
+
+        secrets_to_create = []
         for file in baseline["results"]:
             for secret in baseline["results"][file]:
-                new_secret = {}
-                new_secret["filename"] = file.split(f"{temp_dir}/")[1]
-                new_secret["secret_type"] = secret["type"]
-                new_secret["line_number"] = secret["line_number"]
-                new_secret["secret_hashed"] = secret["hashed_secret"]
-                crud.create_analysis_secret(db, new_secret, analysis_returned.id)
+                new_secret = schemas.SecretBase(
+                    filename=file.split(f"{temp_dir}/")[1],
+                    secret_type=secret["type"],
+                    line_number=secret["line_number"],
+                    secret_hashed=secret["hashed_secret"],
+                )
+                secrets_to_create.append(new_secret)
+
+        analysis_returned = await crud.create_analysis(
+            project_id=project_to_be_analyzed_id,
+            analysis_to_create=analysis,
+            ref_name=repo.commit("HEAD").hexsha,
+            scan_origin=scan_origin,
+            secrets_to_create=secrets_to_create,
+        )
 
         return analysis_returned
 

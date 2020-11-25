@@ -1,5 +1,3 @@
-import asyncio
-
 from fastapi import FastAPI
 
 from raddar.api.api_v1.api import api_router

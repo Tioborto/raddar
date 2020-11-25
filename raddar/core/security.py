@@ -1,13 +1,9 @@
-import binascii
 import hmac
-import urllib.parse
-import json
 
-from fastapi import Depends, HTTPException, Request, Security
+from fastapi import HTTPException, Request, Security
 from fastapi.security import APIKeyHeader
 
 from raddar.core.settings import settings
-
 
 GithubSignatureHeader = APIKeyHeader(name="X-Hub-Signature-256")
 
@@ -18,7 +14,7 @@ async def valid_github_webhook(
     body = await request.body()
 
     signature = hmac.new(
-        settings.api_key.get_secret_value().encode(),
+        settings.API_KEY.get_secret_value().encode(),
         msg=body,
         digestmod="sha256",
     )
