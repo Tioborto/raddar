@@ -4,6 +4,7 @@ from pydantic import BaseSettings, PostgresDsn, SecretStr, validator
 
 
 class Settings(BaseSettings):
+    PROJECT_NAME: str = "raddar"
     PROJECT_RESULTS_DIRNAME: str = "results"
     API_V1_STR: str = "/api/v1"
     API_KEY: SecretStr
@@ -30,6 +31,7 @@ class Settings(BaseSettings):
         )
 
     class Config:
+        case_sensitive = True
         env_file = ".env"
         env_file_encoding = "utf-8"
 

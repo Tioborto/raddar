@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import List
 
 from pydantic import BaseModel
 
@@ -18,12 +18,9 @@ class SecretCreate(SecretBase):
 class Secret(SecretBase):
     id: int
 
-    class Config:
-        orm_mode = True
-
 
 class AnalysisBase(BaseModel):
-    branch_name: Optional[str] = None
+    branch_name: str
 
 
 class AnalysisCreate(AnalysisBase):
@@ -36,10 +33,7 @@ class Analysis(AnalysisBase):
     ref_name: str
     scan_origin: str
     project_id: int
-    secrets: List[Secret] = []
-
-    class Config:
-        orm_mode = True
+    secrets: List[SecretBase] = []
 
 
 class ProjectBase(BaseModel):
@@ -53,6 +47,3 @@ class ProjectCreate(ProjectBase):
 class Project(ProjectBase):
     id: int
     analyses: List[Analysis] = []
-
-    class Config:
-        orm_mode = True
