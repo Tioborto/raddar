@@ -1,4 +1,4 @@
-# Raddar
+![Raddar](static/media/logo-500.png)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Tioborto_raddar&metric=alert_status)](https://sonarcloud.io/dashboard?id=Tioborto_raddar)
 [![python version](https://img.shields.io/badge/python-3.8+-brightgreen?logo=python&logoColor=white)](https://github.com/pre-commit/pre-commit)
