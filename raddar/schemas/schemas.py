@@ -18,6 +18,9 @@ class SecretCreate(SecretBase):
 class Secret(SecretBase):
     id: int
 
+    class Config:
+        orm_mode = True
+
 
 class AnalysisBase(BaseModel):
     branch_name: str
@@ -35,6 +38,9 @@ class Analysis(AnalysisBase):
     project_id: int
     secrets: List[SecretBase] = []
 
+    class Config:
+        orm_mode = True
+
 
 class ProjectBase(BaseModel):
     name: str
@@ -47,3 +53,6 @@ class ProjectCreate(ProjectBase):
 class Project(ProjectBase):
     id: int
     analyses: List[Analysis] = []
+
+    class Config:
+        orm_mode = True

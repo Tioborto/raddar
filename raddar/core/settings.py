@@ -1,6 +1,6 @@
 from typing import Any, Dict, Optional
 
-from pydantic import BaseSettings, PostgresDsn, SecretStr, validator
+from pydantic import AnyUrl, BaseSettings, PostgresDsn, SecretStr, validator
 
 
 class Settings(BaseSettings):
@@ -13,10 +13,12 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: SecretStr
     POSTGRES_DB: str
-    SQLALCHEMY_DATABASE_URI: Optional[PostgresDsn] = None
+    SQLALCHEMY_DATABASE_URI: PostgresDsn
 
-    @classmethod
+    QUEUE_URL: AnyUrl
+
     @validator("SQLALCHEMY_DATABASE_URI", pre=True)
+    @classmethod
     def assemble_db_connection(
         cls, value: Optional[str], values: Dict[str, Any]
     ) -> Any:
@@ -25,7 +27,7 @@ class Settings(BaseSettings):
         return PostgresDsn.build(
             scheme="postgresql",
             user=values.get("POSTGRES_USER"),
-            password=values.get("POSTGRES_PASSWORD").get_secret_value(),
+            password=values["POSTGRES_PASSWORD"].get_secret_value(),
             host=values.get("POSTGRES_SERVER"),
             path=f"/{values.get('POSTGRES_DB') or ''}",
         )

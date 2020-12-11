@@ -15,4 +15,7 @@ def scan_github_project(payload: models.GitHubPushPayload):
     background_id = background_project_analysis.delay(
         payload.repository.full_name, analysis.dict(), "github-webhook"
     )
-    return {"message": f"Notification sent in the background : {background_id}"}
+    return {
+        "message": "Scan scheduled in the background",
+        "scan_id": str(background_id),
+    }

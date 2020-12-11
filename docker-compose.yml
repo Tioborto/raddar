@@ -15,7 +15,7 @@ services:
     depends_on:
       - db
     volumes:
-      - app-db-data:/root/.pgadmin
+      - pg-admin-db-data:/root/.pgadmin
     env_file:
       - .env
     ports:
@@ -24,7 +24,7 @@ services:
   db:
     image: postgres:13
     volumes:
-      - pg-admin-db-data:/var/lib/postgresql/data/pgdata
+      - app-db-data:/var/lib/postgresql/data/pgdata
     ports:
       - "5432:5432"
     env_file:
@@ -50,7 +50,7 @@ services:
     image: rabbitmq:latest
 
   flower:
-    image: mher/flower
+    image: mher/flower:0.9.4
     env_file:
       - .env
     ports:

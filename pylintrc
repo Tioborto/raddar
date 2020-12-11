@@ -16,7 +16,7 @@ disable=missing-docstring,
 ignored-modules=
 
 [TYPECHECK]
-ignored-classes=responses # Responses defines all its global methods dynamically, which is something Pylint doesn't understand
+ignored-classes=
 
 [SIMILARITIES]
 ignore-imports=yes # having the same imports in multiple files is NOT duplicate code

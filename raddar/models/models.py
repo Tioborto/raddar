@@ -1,4 +1,8 @@
+from typing import Literal
+
 from pydantic import BaseModel
+
+ScanOrigin = Literal["manual", "github-webhook"]
 
 
 class GithubRepositoryPayload(BaseModel):

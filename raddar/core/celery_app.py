@@ -3,6 +3,7 @@ import asyncio
 from celery import Celery
 from celery.signals import worker_process_init, worker_process_shutdown
 
+from raddar.core.settings import settings
 from raddar.db.database import database
 
 
@@ -22,7 +23,7 @@ def shutdown(**kwargs):
 
 celery_app = Celery(
     "raddar",
-    broker="pyamqp://guest@queue//",
+    broker=settings.QUEUE_URL,
     include=["raddar.lib.managers.detect_secrets_manager"],
 )
 celery_app.conf.update(task_track_started=True)

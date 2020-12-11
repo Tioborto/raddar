@@ -1,9 +1,11 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 
+from sqlalchemy.sql import and_, or_
+
 from raddar.db.database import analysis, database, project, secret
-from raddar.lib.custom_typing import ScanOrigin
 from raddar.lib.managers.repository_manager import get_branch_name
+from raddar.models import models
 from raddar.schemas import schemas
 
 
@@ -25,10 +27,10 @@ async def create_analysis(
     project_id: int,
     analysis_to_create: schemas.AnalysisBase,
     ref_name: str,
-    scan_origin: ScanOrigin,
+    scan_origin: models.ScanOrigin,
     secrets_to_create: List[schemas.SecretBase],
 ):
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
     query = analysis.insert(None).values(
         execution_date=now,
         branch_name=get_branch_name(analysis_to_create.branch_name),
@@ -54,6 +56,18 @@ async def create_analysis(
         "project_id": project_id,
         "secrets": secrets_to_create,
     }
+
+
+async def get_project_analysis_by_name_and_ref(
+    project_name: str, branch_name: str, ref_name: str
+):
+    query = project.select().where(
+        and_(
+            project.c.name == project_name,
+            or_(analysis.c.branch_name == branch_name, analysis.c.ref_name == ref_name),
+        )
+    )
+    return await database.fetch_all(query)
 
 
 async def get_project_by_name(project_name: str):

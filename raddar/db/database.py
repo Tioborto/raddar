@@ -1,7 +1,7 @@
 import sqlalchemy
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Table
-
 from databases import Database
+from sqlalchemy import TIMESTAMP, Column, ForeignKey, Integer, String, Table
+
 from raddar.core.settings import settings
 
 metadata = sqlalchemy.MetaData()
@@ -10,14 +10,14 @@ project = Table(
     "project",
     metadata,
     Column("id", Integer, primary_key=True),
-    Column("name", String, unique=True),
+    Column("name", String, unique=True, index=True),
 )
 
 analysis = Table(
     "analysis",
     metadata,
     Column("id", Integer, primary_key=True),
-    Column("execution_date", DateTime),
+    Column("execution_date", TIMESTAMP(timezone=True)),
     Column("branch_name", String),
     Column("ref_name", String),
     Column("scan_origin", String),
@@ -29,7 +29,7 @@ secret = Table(
     metadata,
     Column("id", Integer, primary_key=True),
     Column("filename", String),
-    Column("secret_type", String),
+    Column("secret_type", String, index=True),
     Column("line_number", Integer),
     Column("secret_hashed", String),
     Column("analysis_id", Integer, ForeignKey("analysis.id"), nullable=False),

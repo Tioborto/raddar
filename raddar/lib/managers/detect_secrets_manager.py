@@ -8,14 +8,14 @@ from raddar.core import contexts
 from raddar.core.celery_app import celery_app
 from raddar.core.settings import settings
 from raddar.crud import crud
-from raddar.lib.custom_typing import ScanOrigin
 from raddar.lib.managers.repository_manager import get_branch_name
+from raddar.models import models
 from raddar.schemas import schemas
 
 
 @celery_app.task
 def background_project_analysis(
-    project_name: str, analysis: dict, scan_origin: ScanOrigin
+    project_name: str, analysis: dict, scan_origin: models.ScanOrigin
 ):
     loop = asyncio.get_event_loop()
     return loop.run_until_complete(
@@ -28,7 +28,7 @@ def background_project_analysis(
 async def project_analysis(
     project_name: str,
     analysis: schemas.AnalysisBase,
-    scan_origin: ScanOrigin,
+    scan_origin: models.ScanOrigin,
 ):
     with contexts.clone_repo(
         project_dir=settings.PROJECT_RESULTS_DIRNAME,
@@ -52,7 +52,7 @@ async def project_analysis(
         for file in baseline["results"]:
             for secret in baseline["results"][file]:
                 new_secret = schemas.SecretBase(
-                    filename=file.split(f"{temp_dir}/")[1],
+                    filename=file.split(f"{temp_dir}/", maxsplit=1)[1],
                     secret_type=secret["type"],
                     line_number=secret["line_number"],
                     secret_hashed=secret["hashed_secret"],
