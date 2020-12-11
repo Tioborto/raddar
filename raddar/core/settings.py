@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: SecretStr
     POSTGRES_DB: str
-    SQLALCHEMY_DATABASE_URI: PostgresDsn
+    SQLALCHEMY_DATABASE_URI: Optional[PostgresDsn] = None
 
     QUEUE_URL: AnyUrl
 
