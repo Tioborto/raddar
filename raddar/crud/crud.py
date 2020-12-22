@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import List
 
-from sqlalchemy.sql import and_, or_
+from sqlalchemy.sql import and_, or_, select
 
 from raddar.db.database import analysis, database, project, secret
 from raddar.lib.managers.repository_manager import get_branch_name
@@ -58,16 +58,47 @@ async def create_analysis(
     }
 
 
-async def get_project_analysis_by_name_and_ref(
+async def get_project_analysis_secrets_by_name_and_ref(
     project_name: str, branch_name: str, ref_name: str
 ):
-    query = project.select().where(
-        and_(
-            project.c.name == project_name,
-            or_(analysis.c.branch_name == branch_name, analysis.c.ref_name == ref_name),
+    query = select([secret]).where(
+        secret.c.analysis_id
+        == (
+            select([analysis.c.id])
+            .where(
+                and_(
+                    project.c.name == project_name,
+                    or_(
+                        analysis.c.branch_name == branch_name,
+                        analysis.c.ref_name == ref_name,
+                    ),
+                )
+            )
+            .order_by(analysis.c.execution_date.desc())
+            .limit(1)
         )
     )
     return await database.fetch_all(query)
+
+
+async def get_project_analysis_by_name_and_ref(
+    project_name: str, branch_name: str, ref_name: str
+):
+    query = (
+        select([analysis.c.id])
+        .where(
+            and_(
+                project.c.name == project_name,
+                or_(
+                    analysis.c.branch_name == branch_name,
+                    analysis.c.ref_name == ref_name,
+                ),
+            )
+        )
+        .order_by(analysis.c.execution_date.desc())
+        .limit(1)
+    )
+    return await database.fetch_one(query)
 
 
 async def get_project_by_name(project_name: str):

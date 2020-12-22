@@ -16,8 +16,9 @@ services:
       - db
     volumes:
       - pg-admin-db-data:/root/.pgadmin
-    env_file:
-      - .env
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.fr
+      - PGADMIN_DEFAULT_PASSWORD=admin # pragma: allowlist secret
     ports:
       - "5050:80"
 
@@ -27,8 +28,6 @@ services:
       - app-db-data:/var/lib/postgresql/data/pgdata
     ports:
       - "5432:5432"
-    env_file:
-      - .env
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
       - POSTGRES_USER=postgres
