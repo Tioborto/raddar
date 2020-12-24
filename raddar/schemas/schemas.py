@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import List
 
 from pydantic import BaseModel
 
@@ -23,7 +23,7 @@ class Secret(SecretBase):
 
 
 class AnalysisBase(BaseModel):
-    branch_name: Optional[str] = None
+    branch_name: str
 
 
 class AnalysisCreate(AnalysisBase):
@@ -36,7 +36,7 @@ class Analysis(AnalysisBase):
     ref_name: str
     scan_origin: str
     project_id: int
-    secrets: List[Secret] = []
+    secrets: List[SecretBase] = []
 
     class Config:
         orm_mode = True

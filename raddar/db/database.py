@@ -1,12 +1,41 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+import sqlalchemy
+from databases import Database
+from sqlalchemy import TIMESTAMP, Column, ForeignKey, Integer, String, Table
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
+from raddar.core.settings import settings
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+metadata = sqlalchemy.MetaData()
+
+project = Table(
+    "project",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("name", String, unique=True, index=True),
 )
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
+analysis = Table(
+    "analysis",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("execution_date", TIMESTAMP(timezone=True)),
+    Column("branch_name", String),
+    Column("ref_name", String),
+    Column("scan_origin", String),
+    Column("project_id", Integer, ForeignKey("project.id"), nullable=False),
+)
+
+secret = Table(
+    "secret",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("filename", String),
+    Column("secret_type", String, index=True),
+    Column("line_number", Integer),
+    Column("secret_hashed", String),
+    Column("analysis_id", Integer, ForeignKey("analysis.id"), nullable=False),
+)
+
+database = Database(settings.SQLALCHEMY_DATABASE_URI)
+
+engine = sqlalchemy.create_engine(settings.SQLALCHEMY_DATABASE_URI)
+metadata.create_all(engine)

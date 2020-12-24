@@ -51,8 +51,15 @@ To start the API, follow these instructions:
 A *Dockerfile* and a *docker-compose* file are present in this repository.  
 To launch the app using docker, just follow these instructions :  
 
-- `docker-compose build`
-- `docker-compose up -d`
+```
+$ docker-compose build
+$ docker-compose up -d
+```
+
+To check the logs, run:
+```
+docker-compose logs
+```
 
 The API will be accessible at the same URLs as above.
 
@@ -63,6 +70,8 @@ In local mode or using the docker image, a mini web server is launched in your t
 - Docs : <http://localhost:8000/docs>
 - Redoc: <http://localhost:8000/redoc>
 - API: <http://localhost:8000/api/v1>
+- PgAdmin: <http://localhost:5050>
+- Flower: <http://localhost:5555>
 
 ### Code formatting
 

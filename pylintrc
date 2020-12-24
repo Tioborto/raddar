@@ -1,0 +1,25 @@
+[MASTER]
+# Pydantic is compiled as a C extension, which Pylint doesn't load by default (because
+# it could be a security issue... We tell Pylint that it's OK to import it ^^
+extension-pkg-whitelist=pydantic
+
+[MESSAGES CONTROL]
+disable=missing-docstring,
+        no-self-use,
+        inconsistent-return-statements,
+        logging-format-interpolation, # we use f-strings, it works great and isn't slower
+        too-few-public-methods, # this conflicts with Pydantic classes, which are really dataclasses without any methods (usually)
+        bad-continuation, # we use black for formatting, which interferes with Pylint rules
+        fixme, # Leaving TODOs in code is OK
+
+[IMPORTS]
+ignored-modules=
+
+[TYPECHECK]
+ignored-classes=
+
+[SIMILARITIES]
+ignore-imports=yes # having the same imports in multiple files is NOT duplicate code
+
+[VARIABLES]
+ignored-argument-names=arg|args|kwargs
