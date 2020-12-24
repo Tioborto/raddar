@@ -32,10 +32,7 @@ async def get_project_head_secrets(project_name: str, ref_name: str):
         project_name=project_name, branch_name=ref_name, ref_name=ref_name
     )
 
-    secret_list = []
-    for secret in project_analysis_returned:
-        secret_list.append(dict(secret))
-
+    secret_list = [dict(secret) for secret in project_analysis_returned]
     return secret_list
 
 
